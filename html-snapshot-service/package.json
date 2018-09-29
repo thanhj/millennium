@@ -1,0 +1,15 @@
+{
+  "name": "html-snapshot-service",
+  "version": "1.0.0",
+  "description": "html snapshot service",
+  "main": "index.js",
+  "dependencies": {
+    "puppeteer": "^1.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
