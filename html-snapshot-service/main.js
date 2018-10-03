@@ -5,6 +5,8 @@ const { URL } = require('url');
 const pTimeout = require('p-timeout');
 const { DEBUG, HEADFUL, CHROME_BIN, PORT } = process.env;
 const LRU = require('lru-cache');
+
+console.log(`🚀 Initializing Cache Size ${process.env.CACHE_SIZE || Infinity}`);
 const cache = LRU({
   max: process.env.CACHE_SIZE || Infinity,
   maxAge: 1000 * 60, // 1 minute
@@ -54,6 +56,7 @@ http.createServer(async (req, res) => {
   const [_, action, url] = req.url.match(/^\/(screenshot|render|pdf)?\/?(.*)/i) || ['', '', ''];
 
   if (!url){
+    console.log(`❌ Something is wrong. Missing URL.`);
     res.writeHead(400, {
       'content-type': 'text/plain',
     });
@@ -96,6 +99,7 @@ http.createServer(async (req, res) => {
     // Firstly get from cache
     page = cache.get(pageURL);
     if (!page) {
+
       if (!browser) {
         console.log('🚀 Launch browser!');
         const config = {
@@ -117,7 +121,7 @@ http.createServer(async (req, res) => {
         if (CHROME_BIN) config.executablePath = CHROME_BIN;
         browser = await puppeteer.launch(config);
       }
-
+      console.log('🚀 Loading new page!');
       page = await browser.newPage();
       const nowTime = +new Date();
       let reqCount = 0;
@@ -189,6 +193,7 @@ http.createServer(async (req, res) => {
         });
       });
     } else {
+      console.log('🚀 Loading from cache!');
       await page.setViewport({
         width,
         height,
